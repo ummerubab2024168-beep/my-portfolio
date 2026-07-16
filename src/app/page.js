@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 import { 
   Code2, Briefcase, GraduationCap, Award, Mail, 
   ChevronRight, User, Terminal, Cpu, CheckCircle2, Send, 
-  Phone, MapPin, ArrowUp, Sparkles, ShieldAlert, FileText, Globe, Star
+  MapPin, ArrowUp, Sparkles, ShieldAlert, FileText, Globe, Star
 } from 'lucide-react';
 
 export default function Portfolio() {
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
 
@@ -76,7 +76,6 @@ export default function Portfolio() {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       errs.email = "Invalid email format";
     }
-    if (!formData.phone.trim()) errs.phone = "Phone number is required";
     if (!formData.subject.trim()) errs.subject = "Subject is required";
     if (!formData.message.trim()) errs.message = "Message is required";
     
@@ -90,7 +89,7 @@ export default function Portfolio() {
       setSubmitted(true);
       setTimeout(() => {
         setSubmitted(false);
-        setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+        setFormData({ name: '', email: '', subject: '', message: '' });
         setErrors({});
       }, 4000);
     }
@@ -400,14 +399,6 @@ export default function Portfolio() {
               </div>
 
               <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-                <Phone className="text-blue-400 w-5 h-5 flex-shrink-0" />
-                <div>
-                  <span className="text-xs font-mono text-slate-500 block uppercase">Phone</span>
-                  <a href="tel:03298804745" className="text-slate-200 text-sm hover:text-blue-400 font-medium">0329-8804745</a>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-900/60 border border-slate-800">
                 <Globe className="text-blue-400 w-5 h-5 flex-shrink-0" />
                 <div>
                   <span className="text-xs font-mono text-slate-500 block uppercase">LinkedIn</span>
@@ -449,30 +440,16 @@ export default function Portfolio() {
                   {errors.name && <span className="text-xs text-red-400 mt-1 block">{errors.name}</span>}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1">Email Address *</label>
-                    <input 
-                      type="email" 
-                      value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      placeholder="name@example.com"
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 text-sm focus:outline-none focus:border-blue-500 transition"
-                    />
-                    {errors.email && <span className="text-xs text-red-400 mt-1 block">{errors.email}</span>}
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1">Phone Number *</label>
-                    <input 
-                      type="text" 
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      placeholder="0300-0000000"
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 text-sm focus:outline-none focus:border-blue-500 transition"
-                    />
-                    {errors.phone && <span className="text-xs text-red-400 mt-1 block">{errors.phone}</span>}
-                  </div>
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">Email Address *</label>
+                  <input 
+                    type="email" 
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    placeholder="name@example.com"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 text-sm focus:outline-none focus:border-blue-500 transition"
+                  />
+                  {errors.email && <span className="text-xs text-red-400 mt-1 block">{errors.email}</span>}
                 </div>
 
                 <div>

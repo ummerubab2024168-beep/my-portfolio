@@ -11,6 +11,8 @@ export default function Portfolio() {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const techSkills = [
     "Python (Basic)", "C++", "Data Analysis (Basic)", "Database Concepts (Basic)", 
@@ -83,15 +85,30 @@ export default function Portfolio() {
     return Object.keys(errs).length === 0;
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        setFormData({ name: '', email: '', subject: '', message: '' });
-        setErrors({});
-      }, 4000);
+      setLoading(true);
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+
+        if (res.ok) {
+          setSubmitted(true);
+          setFormData({ name: '', email: '', subject: '', message: '' });
+          setErrors({});
+          setTimeout(() => setSubmitted(false), 5000);
+        } else {
+          alert('❌ Message send nahi hua, try again.');
+        }
+      } catch (err) {
+        alert('❌ Server Error!');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -161,20 +178,20 @@ export default function Portfolio() {
         <div className="relative flex justify-center items-center">
           <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 blur-2xl opacity-30 animate-pulse"></div>
           <div className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full border-4 border-blue-500/30 bg-slate-900/90 backdrop-blur-xl p-2 flex flex-col items-center justify-center text-center shadow-2xl overflow-hidden">
-            <img 
-              src="/profile.jpg.jpeg" 
-              alt="Umme Rubab" 
-              className="w-full h-full rounded-full object-cover"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.nextElementSibling.style.display = 'flex';
-              }}
-            />
-            <div className="hidden w-full h-full rounded-full bg-slate-950/80 border border-slate-800 flex-col items-center justify-center p-6">
-              <User className="w-20 h-20 text-blue-400 mb-2" />
-              <span className="text-slate-200 font-bold text-lg">Umme Rubab</span>
-              <span className="text-blue-400 text-xs font-mono">LCWU Student</span>
-            </div>
+            {!imageError ? (
+              <img 
+                src="/profile.jpg.jpeg" 
+                alt="Umme Rubab" 
+                className="w-full h-full rounded-full object-cover"
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <div className="w-full h-full rounded-full bg-slate-950/80 border border-slate-800 flex flex-col items-center justify-center p-6">
+                <User className="w-20 h-20 text-blue-400 mb-2" />
+                <span className="text-slate-200 font-bold text-lg">Umme Rubab</span>
+                <span className="text-blue-400 text-xs font-mono">LCWU Student</span>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -478,9 +495,10 @@ export default function Portfolio() {
 
                 <button 
                   type="submit" 
+                  disabled={loading}
                   className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl transition-all duration-300 shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2"
                 >
-                  Send Message <Send className="w-4 h-4" />
+                  {loading ? 'Sending...' : <>Send Message <Send className="w-4 h-4" /></>}
                 </button>
               </form>
             )}

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
@@ -8,17 +8,8 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [attempts, setAttempts] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
-  const [recaptchaVerified, setRecaptchaVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  // Mock reCAPTCHA v3 background verification simulation
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setRecaptchaVerified(true); // Automatically verifies like reCAPTCHA v3 invisible token
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -28,17 +19,12 @@ export default function LoginPage() {
       return;
     }
 
-    if (!recaptchaVerified) {
-      setError('reCAPTCHA verification failed. Please refresh and try again.');
-      return;
-    }
-
     setLoading(true);
 
-    // Simulated network delay for verification
+    // Network validation simulation (Works perfectly on Local & Vercel production)
     setTimeout(() => {
       const validEmail = "ummerubab2024168@gmail.com";
-      const validPassword = "ummerubab56@"; // Yahan apna original password likhein
+      const validPassword = "ummerubab56@"; // 👈 Yahan apna sahi password likhein
 
       if (email === validEmail && password === validPassword) {
         setError('');
@@ -57,7 +43,7 @@ export default function LoginPage() {
           setError(`Invalid credentials. ${5 - nextAttempts} attempts remaining before IP lockout.`);
         }
       }
-    }, 800);
+    }, 600);
   };
 
   return (

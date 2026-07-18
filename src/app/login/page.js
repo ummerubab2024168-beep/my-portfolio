@@ -16,7 +16,7 @@ export default function LoginPage() {
 
     // Aapki real aur genuine entries jo Sir bhi check karenge
     const validEmail = "ummerubab2024168@gmail.com";
-    const validPassword = "aap_ka_password_yahan_likhein"; // 👈 Apna asal password yahan likhein
+    const validPassword = "ummerubab56@"; // 👈 Apna asal password yahan likhein
 
     if (email.trim() === validEmail && password === validPassword) {
       // Pehle Next.js push se try karega, agar server load le raha ho toh direct window direct karega

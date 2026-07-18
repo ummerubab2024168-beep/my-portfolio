@@ -6,54 +6,42 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [attempts, setAttempts] = useState(0);
-  const [isBlocked, setIsBlocked] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = (e) => {
     e.preventDefault();
-
-    if (isBlocked) {
-      setError('Too many failed attempts. Your IP is temporarily restricted. Please try again later.');
-      return;
-    }
-
     setLoading(true);
+    setError('');
 
-    // Network validation simulation (Works perfectly on Local & Vercel production)
-    setTimeout(() => {
-      const validEmail = "ummerubab2024168@gmail.com";
-      const validPassword = "ummerubab56@"; // 👈 Yahan apna sahi password likhein
+    // Aapki real aur genuine entries jo Sir bhi check karenge
+    const validEmail = "ummerubab2024168@gmail.com";
+    const validPassword = "aap_ka_password_yahan_likhein"; // 👈 Apna asal password yahan likhein
 
-      if (email === validEmail && password === validPassword) {
-        setError('');
-        setAttempts(0);
-        setLoading(false);
+    if (email.trim() === validEmail && password === validPassword) {
+      // Pehle Next.js push se try karega, agar server load le raha ho toh direct window direct karega
+      try {
         router.push('/dashboard');
-      } else {
-        const nextAttempts = attempts + 1;
-        setAttempts(nextAttempts);
-        setLoading(false);
-
-        if (nextAttempts >= 5) {
-          setIsBlocked(true);
-          setError('Too many login attempts from this IP. Access blocked for security.');
-        } else {
-          setError(`Invalid credentials. ${5 - nextAttempts} attempts remaining before IP lockout.`);
-        }
+        // Live server ke liye standard fallback taake freezing bilkul na ho
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 500);
+      } catch (err) {
+        window.location.href = '/dashboard';
       }
-    }, 600);
+    } else {
+      setLoading(false);
+      setError('Invalid email or password. Please try again.');
+    }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4">
       <form onSubmit={handleLogin} className="border border-gray-700 p-8 rounded shadow-md bg-gray-800 w-full max-w-md">
-        <h1 className="text-2xl mb-2 font-bold text-center text-blue-500">Admin Login</h1>
-        <p className="text-xs text-gray-400 text-center mb-6">Secured by Google reCAPTCHA v3 & IP Rate Limiter</p>
+        <h1 className="text-2xl mb-6 font-bold text-center text-blue-500">Admin Login</h1>
         
         {error && (
-          <div className={`p-3 rounded text-sm mb-4 text-center ${isBlocked ? 'bg-red-900/50 text-red-300 border border-red-700' : 'bg-orange-900/50 text-orange-300 border border-orange-700'}`}>
+          <div className="p-3 rounded text-sm mb-4 text-center bg-red-900/50 text-red-300 border border-red-700">
             {error}
           </div>
         )}
@@ -66,7 +54,7 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)} 
             placeholder="admin@example.com" 
             className="w-full border border-gray-600 p-2.5 bg-gray-700 text-white rounded focus:outline-none focus:border-blue-500" 
-            disabled={isBlocked || loading}
+            disabled={loading}
             required 
           />
         </div>
@@ -79,25 +67,18 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)} 
             placeholder="••••••••" 
             className="w-full border border-gray-600 p-2.5 bg-gray-700 text-white rounded focus:outline-none focus:border-blue-500" 
-            disabled={isBlocked || loading}
+            disabled={loading}
             required 
           />
         </div>
 
         <button 
           type="submit" 
-          disabled={isBlocked || loading}
-          className={`w-full p-2.5 rounded font-semibold transition-colors text-white ${isBlocked ? 'bg-gray-700 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
+          disabled={loading}
+          className={`w-full p-2.5 rounded font-semibold transition-colors text-white ${loading ? 'bg-blue-800 cursor-wait' : 'bg-blue-600 hover:bg-blue-700'}`}
         >
-          {loading ? 'Verifying IP & Credentials...' : 'Secure Login'}
+          {loading ? 'Authenticating...' : 'Login'}
         </button>
-
-        <div className="mt-4 text-center">
-          <span className="text-[10px] text-gray-500 inline-flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-            Protected by reCAPTCHA v3 invisible token
-          </span>
-        </div>
       </form>
     </div>
   );
